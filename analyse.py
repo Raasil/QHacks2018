@@ -5,19 +5,21 @@ import cv2
 import operator
 import numpy as np
 import matplotlib.patches as patches
-
 import json
 import pprint
-
-# Import library to display results
 import matplotlib.pyplot as plt
-# %matplotlib inline
+import captions as captionsFile
+
+#from flask import Flask
+#app = Flask(__name__)
+
+#@app.route("/")
 
 # Variables
-_region = 'westcentralus' #Here you enter the region of your subscription
+_region = 'westcentralus'  # Here you enter the region of your subscription
 _url = 'https://{}.api.cognitive.microsoft.com/vision/v1.0/analyze'.format(_region)
-#_url = 'https://westcentralus.api.cognitive.microsoft.com/vision/v1/analyses'
-_key = 'b4613b2c27174a32adda156e49176434' #Here you have to paste your primary key
+# _url = 'https://westcentralus.api.cognitive.microsoft.com/vision/v1/analyses'
+_key = 'b4613b2c27174a32adda156e49176434'  # Here you have to paste your primary key
 _maxNumRetries = 10
 
 
@@ -81,65 +83,72 @@ def renderResultOnImage(result, img):
         categoryName = sorted(result['categories'], key=lambda x: x['score'])[0]['name']
         cv2.putText(img, categoryName, (30, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
 
+def getMetadata(result):
+    captions = result["description"]["captions"]
+    tags = result["description"]["tags"]
+    return [captions, tags]
+
+def displayImage(url):
+    # Load the original image, fetched from the URL
+    arr = np.asarray(bytearray(requests.get(url).content), dtype=np.uint8)
+    img = cv2.cvtColor(cv2.imdecode(arr, -1), cv2.COLOR_BGR2RGB)
+    renderResultOnImage(result, img)
+    ig, ax = plt.subplots(figsize=(15, 20))
+    ax.imshow(img)
+    plt.show()
+
+
+
 
 ## Analysis of an image retrieved via URL
 
 # URL direction to image
-urlImage = input('Enter an image URL: ')
-#urlImage = 'http://www.hkepci.com/data/out/29/362145-people.jpg'
+#urlImage = input('Enter an image URL: ')
+urlImage = 'http://static.asiawebdirect.com/m/bangkok/portals/pattaya-bangkok-com/homepage/nightlife/pagePropertiesImage/pattaya-nightlife.jpg.jpg'
 
 # Computer Vision parameters
-params = { 'visualFeatures' : 'Color,Categories,Description,Tags,Faces'}
+params = {'visualFeatures': 'Color,Categories,Description,Tags,Faces'}
 
 headers = dict()
 headers['Ocp-Apim-Subscription-Key'] = _key
 headers['Content-Type'] = 'application/json'
 
-json = { 'url': urlImage }
+json_url = {'url': urlImage}
 data = None
-
 emotion_headers = dict()
 emotion_headers['Ocp-Apim-Subscription-Key'] = _key
 emotion_headers['Content-Type'] = 'application/json'
 emotion_data = None
 emotion_params = None
 
-result = processRequest( json, data, headers, params )
-emotion_result = processRequest( json, emotion_data, emotion_headers, emotion_params )
+result = processRequest(json_url, data, headers, params)
+emotion_result = processRequest(json_url, emotion_data, emotion_headers, emotion_params)
 
 if result is not None:
-    caption = result["description"]["captions"]
-    tags = result["description"]["tags"]
-    print(caption)
-    print(tags)
-
+    [captions, tags] = getMetadata(result)
     #pprint.pprint(result)
-    #print('\n\n\n')
+    #displayImage(urlImage)
 
-    # Load the original image, fetched from the URL
-    arr = np.asarray( bytearray( requests.get( urlImage ).content ), dtype=np.uint8 )
-    img = cv2.cvtColor( cv2.imdecode( arr, -1 ), cv2.COLOR_BGR2RGB )
-    renderResultOnImage( result, img )
-    ig, ax = plt.subplots(figsize=(15, 20))
-    ax.imshow( img )
-    plt.show()
+else:
+    captions = "no caption"
+    tags = "no result"
+
+print(captions)
+print(tags)
+
+type = "lyric"
+keyword = "tonight"
+caps = captionsFile.Captions()
+refinedCaptions = caps.findCaptionsWith(keyword, type)
+print('Refined: ')
+print(refinedCaptions)
+suggestedCaptions = caps.findRefinedCaptionsWith(tags, refinedCaptions, type)
+print('\nFinal suggested: ')
+print(suggestedCaptions)
 
 
-'''
-if emotion_result is not None:
-    print('\nEmotions data:\n')
-    pprint.pprint(emotion_result)
 
-'''
 
-#for i in result:
-  #  print(i)
- #   pprint.pprint(i)
-#print(x)
-#print(result["metadata"]["format"])
-# loop through categories with for in loop
-# access other elements from dictionary
-#print(result["color"]["accentColor"])
 
 
 ## analyse image stored on disk
