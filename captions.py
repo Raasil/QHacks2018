@@ -81,7 +81,7 @@ class Captions:
                 for i, cap in enumerate(typeCaptions):
                     if tag in cap:  # if tag is in the refined caption
                         flags[i] += 1
-            print(flags)
+            #print(flags)
             while len(refinedCaptions) < n:
                 index = flags.index(max(flags))
                 flags[index] = 0
@@ -109,14 +109,13 @@ class Captions:
                 for i, refCap in enumerate(refinedCaptions):
                     if tag in refCap:  # if tag is in the refined caption
                         flags[i]+=1
-            print(flags)
+            #print(flags)
             suggestedCaptions = []
             for i in range(n):
                 index = flags.index(max(flags))
                 flags[index] = 0
 
                 suggestedCaptions.append(refinedCaptions[index])
-
 
             return suggestedCaptions
 

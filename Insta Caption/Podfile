@@ -1,0 +1,23 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'Insta Caption' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+    pod 'Firebase/Core'
+    pod 'Firebase/Database'
+    pod 'Firebase'
+    
+  # Pods for Insta Caption
+
+  target 'Insta CaptionTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'Insta CaptionUITests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end

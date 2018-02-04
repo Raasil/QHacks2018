@@ -9,29 +9,27 @@ import json
 import pprint
 import matplotlib.pyplot as plt
 import captions as captionsFile
+import pyrebase
 
-#from flask import Flask
-#app = Flask(__name__)
+config = {
+  "apiKey": "AIzaSyC5PUUmIPcUhiIE2Gu8Ybl7pQQaSWxVs_g",
+  "authDomain": "qhacks2018.firebaseapp.com",
+  "databaseURL": "https://qhacks2018.firebaseio.com",
+  "storageBucket": "qhacks2018.appspot.com",
+  "serviceAccount": "qhacks2018-firebase-adminsdk-1ld8z-61d9688eeb.json"
+}
 
-#@app.route("/")
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
 
 # Variables
-_region = 'westcentralus'  # Here you enter the region of your subscription
+_region = 'westcentralus'
 _url = 'https://{}.api.cognitive.microsoft.com/vision/v1.0/analyze'.format(_region)
-# _url = 'https://westcentralus.api.cognitive.microsoft.com/vision/v1/analyses'
-_key = 'b4613b2c27174a32adda156e49176434'  # Here you have to paste your primary key
+_key = 'b4613b2c27174a32adda156e49176434'
 _maxNumRetries = 10
 
 
 def processRequest(json, data, headers, params):
-    """
-    Helper function to process the request to Project Oxford
-
-    Parameters:
-    json: Used when processing images from its URL. See API Documentation
-    data: Used when processing image read from disk. See API Documentation
-    headers: Used to pass the key information and the data type request
-    """
 
     retries = 0
     result = None
@@ -71,7 +69,6 @@ def processRequest(json, data, headers, params):
 
 
 def renderResultOnImage(result, img):
-    """Display the obtained results onto the input image"""
 
     R = int(result['color']['accentColor'][:2], 16)
     G = int(result['color']['accentColor'][2:4], 16)
@@ -97,9 +94,6 @@ def displayImage(url):
     ax.imshow(img)
     plt.show()
 
-## Analysis of an image retrieved via URL
-
-# URL direction to image
 #urlImage = input('Enter an image URL: ')
 urlImage = 'http://s2.thingpic.com/images/rc/bQEtyDiwGtiben3qiCxw7emX.png'
 
@@ -130,18 +124,17 @@ else:
     captions = "no caption"
     tags = "no result"
 
-print(captions)
-print(tags)
-
-type = "motivational"
-keyword = "people"
+type = input('Enter a caption type (lyric, generic, sentimental, funny, selfie, puns, motivational): ')
+keyword = input('Enter a keyword for your caption (or press enter): ')
 caps = captionsFile.Captions()
 refinedCaptions = caps.findCaptionsWith(keyword, type)
-print('Refined: ')
-print(refinedCaptions)
+
 suggestedCaptions = caps.findRefinedCaptionsWith(tags, refinedCaptions, type)
-print('\nFinal suggested: ')
+print('\nCaption Suggestions: ')
 print(suggestedCaptions)
+
+data = {"suggested_captions": suggestedCaptions, "type": type, "keyword": keyword, "image": urlImage}
+db.child("user1").push(data)
 
 
 ## analyse image stored on disk

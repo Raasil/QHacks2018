@@ -1,0 +1,6 @@
+framework module Pods_Insta_CaptionTests {
+  umbrella header "Pods-Insta CaptionTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

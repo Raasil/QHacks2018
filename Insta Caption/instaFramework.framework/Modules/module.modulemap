@@ -1,0 +1,6 @@
+framework module instaFramework {
+  umbrella header "instaFramework.h"
+
+  export *
+  module * { export * }
+}
