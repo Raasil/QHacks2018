@@ -97,14 +97,11 @@ def displayImage(url):
     ax.imshow(img)
     plt.show()
 
-
-
-
 ## Analysis of an image retrieved via URL
 
 # URL direction to image
 #urlImage = input('Enter an image URL: ')
-urlImage = 'http://static.asiawebdirect.com/m/bangkok/portals/pattaya-bangkok-com/homepage/nightlife/pagePropertiesImage/pattaya-nightlife.jpg.jpg'
+urlImage = 'http://s2.thingpic.com/images/rc/bQEtyDiwGtiben3qiCxw7emX.png'
 
 # Computer Vision parameters
 params = {'visualFeatures': 'Color,Categories,Description,Tags,Faces'}
@@ -136,8 +133,8 @@ else:
 print(captions)
 print(tags)
 
-type = "lyric"
-keyword = "tonight"
+type = "motivational"
+keyword = "people"
 caps = captionsFile.Captions()
 refinedCaptions = caps.findCaptionsWith(keyword, type)
 print('Refined: ')
