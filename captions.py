@@ -7,6 +7,7 @@ class Captions:
         self.generic = []
         self.sentimental = []
         self.funny = []
+        self.selfie = []
         self.fetchCaptions()
 
 
@@ -36,6 +37,8 @@ class Captions:
                     self.sentimental.append(caption)
                 elif header == 'captions_funny':
                     self.funny.append(caption)
+                elif header == 'captions_selfie':
+                    self.selfie.append(caption)
 
 
     # pass in array of wanted captions. If any category caption is wanted, construct array of all of them first then send in
@@ -89,14 +92,13 @@ class Captions:
             return self.sentimental
         elif type == "funny":
             return self.funny
+        elif type == "selfie":
+            return self.selfie
         else:
-            return [self.lyrics, self.generic, self.sentimental, self.funny]
+            return [self.lyrics, self.generic, self.sentimental, self.funny, self.selfie]
 
-    def getLyric(self):
-        return self.lyrics
-    def getGeneric(self):
-        return self.generic
-    def getSentimental(self):
-        return self.sentimental
-    def getFunny(self):
-        return self.funny
+    def getLyric(self): return self.lyrics
+    def getGeneric(self): return self.generic
+    def getSentimental(self): return self.sentimental
+    def getFunny(self): return self.funny
+    def getSelfie(self): return self.selfie

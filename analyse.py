@@ -147,10 +147,6 @@ print('\nFinal suggested: ')
 print(suggestedCaptions)
 
 
-
-
-
-
 ## analyse image stored on disk
 '''
 # Load raw image file into memory
